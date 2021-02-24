@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d');
 const colors = document.getElementsByClassName('jsColor');
 const range = document.getElementById('jsRange');
 const mode = document.getElementById('jsMode');
+const saveBtn = document.getElementById('jsSave');
 
 
 const INITAL_COLOR = '#2c2c2c';
@@ -12,6 +13,8 @@ const CANVAS_SIZE = 500;
 canvas.width = CANVAS_SIZE;
 canvas.height = CANVAS_SIZE;
 
+ctx.fillStyle = 'white';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
 ctx.strokeStyle = INITAL_COLOR;
 ctx.lineWidth = 2.5;
 
@@ -60,24 +63,9 @@ function handleCanvasClick() {
     }
 }
 
-if(canvas) {
-    canvas.addEventListener('mousemove', onMouseMove);
-    canvas.addEventListener('mousedown', startPainting);
-    canvas.addEventListener('mouseup', stopPainting);
-    canvas.addEventListener('mouseleave', stopPainting);
-    canvas.addEventListener('click', handleCanvasClick)
-}
-
-Array.from(colors).forEach(crayon => crayon.addEventListener('click', handleColorClick));
-
-
 function handleRangeChange(event) {
     const size = event.target.value;
     ctx.lineWidth = size;
-}
-
-if(range) {
-    range.addEventListener('input', handleRangeChange);
 }
 
 function handleModeClick(event) {
@@ -90,7 +78,40 @@ function handleModeClick(event) {
     }
 }
 
+function handleCM(event) {
+    event.preventDefault();
+}
+
+function handleSaveClick(event) {
+    const image = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+
+    link.href = image;
+    link.download = 'paintJS';
+    link.click();
+}
+
+if(canvas) {
+    canvas.addEventListener('mousemove', onMouseMove);
+    canvas.addEventListener('mousedown', startPainting);
+    canvas.addEventListener('mouseup', stopPainting);
+    canvas.addEventListener('mouseleave', stopPainting);
+    canvas.addEventListener('click', handleCanvasClick);
+    canvas.addEventListener('contextmenu', handleCM);
+}
+
+Array.from(colors).forEach(crayon => crayon.addEventListener('click', handleColorClick));
+
+
+if(range) {
+    range.addEventListener('input', handleRangeChange);
+}
+
 if(mode) {
     mode.addEventListener('click', handleModeClick);
+}
+
+if(saveBtn) {
+    saveBtn.addEventListener('click', handleSaveClick);
 }
 
